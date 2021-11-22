@@ -45,9 +45,31 @@ vec_1 <- c(0, 1, 2, 3)
 vec_1[1] # indexes start with 1
 vec_2 <- rep(6, 3) # replicate '6' 3 times
 vec_2
-print("error on vec_1 + vec_2 because vectors must have the same size)")
+print("error on vec_1 + vec_2 because vectors must have the same size")
 vec_1 / 2
-
-
 rm(vec_1, vec_2)
 
+# Distributions
+set.seed(42)
+
+# Normal distribution
+rnorm(n=50, mean=0, sd=1)
+
+# Poisson distribution
+rpois(100, 10)
+
+# Binomial distribution, 100 experiments (10 events each), 50% probability
+rbinom(100, 10, 0.5)
+
+# More operations with vectors
+rep(c(0, 2), time=2) # repeat vector twice: 0 2 0 2
+rep(c(0, 2), each=2) # repeat each element twice: 0 0 2 2
+
+# Text vectors
+letters
+LETTERS
+
+# Strings concatenation
+paste(letters, set="_", seq(1, 26))
+
+# ISOdatetime
