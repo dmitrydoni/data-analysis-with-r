@@ -11,3 +11,25 @@ votes.repub[1:5, 1:4]  # only specific rows (1 through 5) and columns (1 through
 
 colMeans(votes.repub, na.rm = TRUE)  # column means, remove NA
 rowMeans(votes.repub)  # row means
+
+votes.repub[, 30] # column 30 has no missing values
+repub30_mean <- mean(votes.repub[, 30])
+repub30_mean  # 62.7
+
+if(mean(votes.repub[, 30]) > 60){
+  print("Republicans got more than 60% votes")
+}else{
+  print("Republicans got less than 60% votes")
+}
+
+votes.repub[, 7] # column 7 has missing values
+repub7_mean <- mean(votes.repub[, 7])
+repub7_mean  # NA
+repub7_mean_na <- mean(votes.repub[, 7], na.rm = TRUE)
+repub7_mean_na  # 47.9
+
+if(mean(votes.repub[, 7], na.rm = TRUE) > 60){
+  print("Republicans got more than 60% votes")
+}else{
+  print("Republicans got less than 60% votes")
+}
