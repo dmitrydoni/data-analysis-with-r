@@ -85,7 +85,53 @@ idx_p50_n1  # 34497
 idx_p50_n2 <- cnt/2 + 1
 idx_p50_n2  # 34498
 sort(cardio$ap_lo[cardio$ap_lo<200 & cardio$ap_lo>20])[c(idx_p50_n1, idx_p50_n2)]  # 80 80
-# First 10
+# First 10 elements
 head(sort(cardio$ap_lo[cardio$ap_lo<200 & cardio$ap_lo>20])[idx_p25:idx_p50_n2], 10)  # 80 80 80 ...
-# Last 10
+# Last 10 elements
 tail(sort(cardio$ap_lo[cardio$ap_lo<200 & cardio$ap_lo>20])[idx_p25:idx_p50_n2], 10)  # 80 80 80 ...
+
+# Prepare a cleansed dataset for analysis
+# Use function filter(), %>% from package dplyr to get a dataset without outliers
+cardio_tidy_set <- cardio %>% filter((ap_lo<200 & ap_lo>20) & (ap_hi<300 & ap_hi>40))
+head(cardio_tidy_set, 3)
+# Compare dimensions in raw and "tidy" (cleansed) datasets
+dim(cardio)  # 70000 14
+dim(cardio_tidy_set)  # 68781 14
+nrow(cardio)  # 70000
+nrow(cardio_tidy_set)  # 68781
+ncol(cardio)  # 14
+ncol(cardio_tidy_set)  # 14
+# Compare mean and standard deviation in raw and "tidy" (cleansed) datasets
+mean(cardio$ap_hi)  # 128.8
+mean(cardio_tidy_set$ap_hi)  # 126.6
+sd(cardio$ap_hi)  # 154.0
+sd(cardio_tidy_set$ap_hi)  # 16.8
+
+# Visualize the raw and cleansed datasets as histograms
+# In the cleansed dataset, the distributions look more like normal
+mypar(2,2)
+hist(cardio$ap_hi, main="High Pressure", xlab = "aphi_cardio", ylab="Frequency")
+hist(cardio_tidy_set$ap_hi, main="High Pressure (Cleansed)", xlab = "aphi_cardio_tidy", ylab="Frequency")
+hist(cardio$ap_lo, main="Low Pressure", xlab = "aplo_cardio", ylab="Frequency")
+hist(cardio_tidy_set$ap_lo, main="Low Pressure (Cleansed)", xlab = "aplo_cardio_tidy", ylab="Frequency")
+
+# Visualize the cleansed dataset as Q-Q plot
+mypar(1,2)
+# Sample & theoretical quantiles for low pressure
+qqnorm(cardio_tidy_set$ap_lo, main="Low Pressure (Cleansed)")
+qqline(cardio_tidy_set$ap_lo, col="red", lwd=2)
+# Sample & theoretical quantiles for high pressure
+qqnorm(cardio_tidy_set$ap_hi, main="High Pressure (Cleansed)")
+qqline(cardio_tidy_set$ap_hi, col="red", lwd=4)
+abline(h=160, col="green")  # horizontal line shows where the quantiles go apart
+
+# Compare the high and low pressure by gender (1 = F, 2 = M)
+mypar(1,2)
+groups_gender_lo <- split(cardio_tidy_set$ap_lo, cardio_tidy_set$gender)
+str(groups_gender_lo)
+boxplot(groups_gender_lo)  # low pressure is not different for men and women
+title("Low Pressure")
+groups_gender_hi <- split(cardio_tidy_set$ap_hi, cardio_tidy_set$gender)
+str(groups_gender_hi)
+boxplot(groups_gender_hi)  # high pressure is not different for men and women
+title("High Pressure")
