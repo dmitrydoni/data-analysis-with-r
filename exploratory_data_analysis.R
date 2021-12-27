@@ -127,11 +127,89 @@ abline(h=160, col="green")  # horizontal line shows where the quantiles go apart
 
 # Compare the high and low pressure by gender (1 = F, 2 = M)
 mypar(1,2)
+# Split low pressure values by gender
 groups_gender_lo <- split(cardio_tidy_set$ap_lo, cardio_tidy_set$gender)
 str(groups_gender_lo)
 boxplot(groups_gender_lo)  # low pressure is not different for men and women
 title("Low Pressure")
+# Split high pressure values by gender
 groups_gender_hi <- split(cardio_tidy_set$ap_hi, cardio_tidy_set$gender)
 str(groups_gender_hi)
 boxplot(groups_gender_hi)  # high pressure is not different for men and women
 title("High Pressure")
+
+# Density plot for high pressure and low pressure
+# Expected: normal distrubution with a single spike
+plot(density(cardio_tidy_set$ap_lo), col=1, lwd=2, main="Low Pressure")
+plot(density(cardio_tidy_set$ap_hi), col=3, lwd=2, main="High Pressure")
+# In fact, the charts show skewed distributions with several spikes
+
+# Figure out the reason why there are spikes
+mypar(1,1)
+plot(density(cardio_tidy_set$ap_lo), col="1", lwd=2, main="Low Pressure")
+abline(v=70, col="red")  # spike at 70
+abline(v=60, col="red")  # spike at 60
+abline(v=80, col="red")  # spike at 80
+sort_lo <- sort(cardio_tidy_set$ap_lo)
+cut_1 <- sort_lo[sort_lo>65 & sort_lo<75]
+tail(cut_1, 20)
+# As seen, the spikes are the result of rounding to 60, 70, 80, etc.
+
+# Normal distributions for low pressure and high pressure on one chart
+plot(density(cardio_tidy_set$ap_lo, adjust = 20), col=1, lwd=2, main="Low & High Pressure")
+lines(density(cardio_tidy_set$ap_hi, adjust = 20), col=3, lwd=2, lty=2)  # dashed line
+legend("topright", c("ap_lo","ap_hi"), col=c(1,3), lty = c(1,2))
+
+# Scatter plot to find correlation between
+plot(cardio_tidy_set$ap_lo,
+     cardio_tidy_set$ap_hi,
+     col = 5,  # color
+     main=paste("correlation = ",
+                signif(
+                  cor(cardio_tidy_set$ap_lo, cardio_tidy_set$ap_hi), # correlation
+                  2
+                )
+     )
+)
+
+# Scatter plot with genders
+plot(cardio_tidy_set$ap_hi,
+     cardio_tidy_set$ap_lo,
+     pch=22,  # ?point
+     bg=as.numeric(factor(cardio_tidy_set$gender)),
+     xlab = "Low Pressure",
+     ylab= "High Pressure"
+)
+legend("bottomright",
+       levels(factor(cardio_tidy_set$gender)),
+       col=seq(along=levels(factor(cardio_tidy_set$gender))),
+       pch=22,
+       cex=1.1
+)
+
+# Scatter plot with other features
+plot(cardio_tidy_set$weight,
+     cardio_tidy_set$height,
+     pch=21,
+     bg= as.numeric(factor(cardio_tidy_set$gender)),
+     xlab = "Weight",
+     ylab= "Height")
+legend("topright",
+       levels(factor(cardio_tidy_set$gender)),
+       col=seq(along=levels(factor(cardio_tidy_set$gender))),
+       pch=19,
+       cex=1.1)
+
+# Scatter plot for other features
+head(cardio_tidy_set)
+miniset <- cardio_tidy_set[,3:5]
+head(miniset)
+nrow(miniset)  # 68781
+plot(miniset, pch=21, bg=miniset$gender)
+plot(miniset$gender, miniset$weight, pch=21, bg=miniset$gender)
+
+# Bar plot
+bp <- barplot(sort(cardio_tidy_set$gender),
+              horiz = T,
+              main = "Bar plot example")
+text(bp, format(sort(cardio_tidy_set$gender)))
