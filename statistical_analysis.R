@@ -1,3 +1,23 @@
+# Z criterion
+# T criterion
+# Confidence intervals
+
+# install.packages("cluster")
+# install.packages("rio")
+# install.packages("dplyr")
+# install.packages("rafalib")
+
+# Load installed packages
+# library(cluster)
+
+# View data sets in package "cluster"
+# data()
+
+# Get/set working directory
+# wd <- '/Users/ddoni/Projects/R_Project'
+# setwd(wd)
+getwd()
+
 set.seed(4)
 
 samp<-rnorm(50,7,3)
